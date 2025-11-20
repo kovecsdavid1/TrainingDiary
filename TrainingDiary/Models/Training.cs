@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 
-namespace TrainingDiary
+namespace TrainingDiary.Models
 {
-    public partial class Training:ObservableObject
+    public partial class Training : ObservableObject
     {
-        [ObservableProperty]
-        [property: PrimaryKey]
-        [property: AutoIncrement]
-        int id;
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
 
         [ObservableProperty]
         string type;
@@ -30,6 +29,5 @@ namespace TrainingDiary
         string photopath;
         [ObservableProperty]
         string location;
-
     }
 }

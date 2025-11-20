@@ -4,48 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TrainingDiary.Models;
 namespace TrainingDiary.Service;
-public class SQLiteTrainingDatabase : ITrainingDatabase
+public class SQLiteTrainingDatabase
 {
-    SQLite.SQLiteOpenFlags Flags =
-    SQLite.SQLiteOpenFlags.ReadWrite |
-    SQLite.SQLiteOpenFlags.Create;
+    private readonly SQLiteAsyncConnection _database;
 
-    string databasePath =
-    Path.Combine(FileSystem.Current.AppDataDirectory, "trainings.db3");
-
-    SQLiteAsyncConnection database;
-
-    public SQLiteTrainingDatabase()
+    public SQLiteTrainingDatabase(string dbPath)
     {
-        database = new SQLiteAsyncConnection(databasePath, Flags);
-        database.CreateTableAsync<Training>().Wait();
+        _database = new SQLiteAsyncConnection(dbPath);
+        _database.CreateTableAsync<Training>().Wait();
+    }
+    public Task<List<Training>> GetTrainingsAsync()
+    {
+        return _database.Table<Training>().ToListAsync();
     }
 
-    public async Task<List<Training>> GetTrainingsAsync()
+    public Task<int> SaveTrainingAsync(Training training)
     {
-        return await database.Table<Training>().ToListAsync();
+        if (training.Id != 0)
+            return _database.UpdateAsync(training);
+        else
+            return _database.InsertAsync(training);
     }
 
-    public async Task<Training> GetTrainingAsync(int id)
+    public Task<int> DeleteTrainingAsync(Training training)
     {
-        return await database.Table<Training>().Where(i => i.Id == id).FirstOrDefaultAsync();
-    }
-
-    public async Task CreateTrainingAsync(Training training)
-    {
-        await database.InsertAsync(training);
-    }
-
-    public async Task UpdateTrainingAsync(Training training)
-    {
-        await database.UpdateAsync(training);
-    }
-
-    public async Task DeleteTrainingAsync(Training training)
-    {
-        await database.DeleteAsync(training);
+        return _database.DeleteAsync(training);
     }
 
 }
