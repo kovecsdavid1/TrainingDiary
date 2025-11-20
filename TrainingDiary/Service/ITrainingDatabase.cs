@@ -1,8 +1,8 @@
 ﻿namespace TrainingDiary.Service;
 
-internal class ITrainingDatabase
+public interface ITrainingDatabase
 {
-    Task<List<Training>> GetTrainingssAsync();
+    Task<List<Training>> GetTrainingsAsync();
     Task<Training> GetTrainingAsync(int id);
     Task CreateTrainingAsync(Training raining);
     Task UpdateTrainingAsync(Training raining);
