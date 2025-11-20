@@ -1,15 +1,17 @@
-﻿using System;
+﻿using TrainingDiary.Models;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Messaging;
 
-namespace TrainingDiary
+namespace TrainingDiary.Service
 {
-    public class APITrainingDatabase:ITrainingDatabase
+    public class APITrainingDatabase
     {
+        private readonly SQLiteAsyncConnection _database;
+
         HttpClient client;
         JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
@@ -72,7 +74,7 @@ namespace TrainingDiary
         {
             try
             {
-                string json = JsonSerializer.Serialize<Training>(training, serializerOptions);
+                string json = JsonSerializer.Serialize(training, serializerOptions);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await client.PostAsync(uri, content);
@@ -99,7 +101,7 @@ namespace TrainingDiary
         {
             try
             {
-                string json = JsonSerializer.Serialize<Training>(training, serializerOptions);
+                string json = JsonSerializer.Serialize(training, serializerOptions);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await client.PutAsync(uri, content);
